@@ -1,18 +1,26 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppSelector } from '../store/hooks';
 import { formatCurrency } from '../utils/formatCurrency';
-import { getTotalPrice, getTotalQuantity } from '../store/slices/cartSlice';
 import CartItem from '../components/CartItem';
+import { Product } from '../store/slices/cartSlice';
 const CartPage = () => {
-    const { cartItems, cartLength, totalQuantity, totalPrice } = useAppSelector(
-        (state) => state.cart,
-    );
-    const dispatch = useAppDispatch();
-    React.useEffect(() => {
-        dispatch(getTotalPrice());
-        dispatch(getTotalQuantity());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cartItems.length]);
+    const { cartItems } = useAppSelector((state) => state.cart);
+    const totalPrice = React.useMemo(() => {
+        const data = [...cartItems];
+        const priceTotal = data.reduce(
+            (total: number, item: Product) => total + item.price * item.quantity,
+            0,
+        );
+        return priceTotal;
+    }, [cartItems]);
+    const totalQuantity = React.useMemo(() => {
+        const data = [...cartItems];
+        const quantityTotal = data.reduce(
+            (total: number, item: Product) => total + item.quantity,
+            0,
+        );
+        return quantityTotal;
+    }, [cartItems]);
     return (
         <div>
             <section className="h-100 gradient-custom">
@@ -21,7 +29,7 @@ const CartPage = () => {
                         <div className="col-md-8">
                             <div className="card mb-4">
                                 <div className="card-header py-3">
-                                    <h5 className="mb-0">Cart - {cartLength} items</h5>
+                                    <h5 className="mb-0">Cart - {cartItems.length} items</h5>
                                 </div>
                                 <div className="card-body">
                                     {cartItems.map((item) => {

@@ -1,15 +1,9 @@
-import React from 'react';
 import { MDBContainer, MDBNavbar } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { getLengthCartItem } from '../store/slices/cartSlice';
+import { useAppSelector } from '../store/hooks';
+
 export default function Navbar() {
-    const { cartLength, cartItems } = useAppSelector((state) => state.cart);
-    const dispatch = useAppDispatch();
-    React.useEffect(() => {
-        dispatch(getLengthCartItem());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cartItems.length]);
+    const { cartItems } = useAppSelector((state) => state.cart);
     return (
         <MDBNavbar light bgColor="light">
             <MDBContainer>
@@ -40,7 +34,7 @@ export default function Navbar() {
                                     fontWeight: 'bold',
                                 }}
                             >
-                                {cartLength}
+                                {cartItems.length}
                             </span>
                         </i>
                     </Link>
